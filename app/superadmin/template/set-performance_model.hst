@@ -1,0 +1,55 @@
+<form name="form_save" method="post" action="index.php?c=app&a=superadmin:index&s=save&table=set">
+	<div class="pk-row pk-padding-bottom-15 pk-margin-bottom-15" style="border-bottom:solid 1px #458fce">
+		<label class="pk-w-sm-3 _labeltext pk-text-primary pk-text-nowrap">性能模式</label>
+		<div class="pk-w-sm-8"></div>
+	</div>
+
+	<div class="pk-row pk-padding-bottom-5">
+		<label class="pk-w-sm-3 _labeltext">性能模式</label>
+		<div class="pk-w-sm-8">
+			<select class="pk-textbox" data-value="{$_G['SET']['HIGHSPEED']}" name="highspeed">
+				<option value="0">关闭</option>
+				<option value="1">开启</option>
+			</select>
+		</div>
+	</div>
+	<div class="pk-row pk-padding-bottom-15">
+		<label class="pk-w-sm-3">&nbsp;</label>
+		<div class="pk-w-sm-8 pk-text-xs">
+			<p>当前文章数：{$_G['TEMP']['TOTAL_READ']}，回复数：{$_G['TEMP']['TOTAL_REPLY']}，总贴数：{$_G['TEMP']['TOTAL_RR']}，<span class="pk-text-bold">{$_G['TEMP']['TEXT']}</span>。</p>
+			<p class="pk-text-danger">性能模式开启后回收站功能、帖子审核功能、动态页的显示/隐藏指定版块功能将会失效，删除文章将会直接删除不会进入回收站，回收站内未删除的帖子及未审核的帖子都会被显示出来，请在决定开启该功能前处理回收站及待审核的帖子。</p>
+			<p class="pk-text-md pk-padding-top-15">
+				<a class="pk-text-primary pk-hover-underline" href="javascript:;" onclick="openIframe('index.php?c=app&a=superadmin:index&s=forum&t=postcheck&type=read','待审核文章数')">待审核文章列表</a>
+				<span>&nbsp;</span>
+				<a class="pk-text-primary pk-hover-underline" href="javascript:;" onclick="openIframe('index.php?c=app&a=superadmin:index&s=forum&t=postcheck&type=reply','待审核回复数')">待审核回复列表</a>
+				<span>&nbsp;</span>
+				<a class="pk-text-primary pk-hover-underline" href="javascript:;" onclick="openIframe('index.php?c=app&a=superadmin:index&s=forum&t=recycle','帖子回收站')">帖子回收站</a>
+			</p>
+		</div>
+	</div>
+
+	<div class="pk-row pk-padding-bottom-15">
+		<label class="pk-w-sm-3 _labeltext"></label>
+		<div class="pk-w-sm-8">
+			<button id="SubmitBtn" type="button">保存</button>
+		</div>
+	</div>
+</form>
+<script>
+	$(function() {
+		//上传图片
+		$('input[name="weblogo"]').on('change', function() {
+			$('#_Logo').attr('src', $(this).val());
+		});
+		$('#_Logo').on('click', function() {
+			var This = $(this);
+			var _id = '_' + randomString(7);
+			$('body').append('<input id="' + _id + '" type="file" class="pk-hide" accept="image/*">');
+			$('#' + _id).on('change', function() {
+				This.attr('src', getLocalFileUrl(this)).on('load', function() {
+					$('input[name="weblogo"]').val(ImageToBase64(this));
+				});
+			}).click();
+		});
+	});
+</script>

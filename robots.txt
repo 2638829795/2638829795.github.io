@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /install/
+Disallow: /app/superadmin/
+Disallow: /index.php?c=app&a=superadmin*

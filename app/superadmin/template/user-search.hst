@@ -1,0 +1,137 @@
+<form name="form_save" method="post" action="index.php?c=app&a=superadmin:index&s=user&t=search">
+	<div class="pk-row pk-padding-bottom-15 pk-margin-bottom-15" style="border-bottom:solid 1px #458fce">
+		<label class="pk-w-sm-3 pk-padding-top-5 pk-text-bold pk-text-right pk-text-primary pk-text-nowrap">用户搜索</label>
+		<div class="pk-w-sm-8"></div>
+	</div>
+
+	<div class="pk-row pk-padding-bottom-15" style="width:100%;max-width:480px;padding:0 10px;">
+		<div class="pk-w-sm-12" style="padding-left:162px;padding-right:70px;border:solid 1px #ddd;border-radius:4px;">
+			<select class="pk-textbox" data-value="{$type}" name="type"
+				style="width:90px;position:absolute;left:0;top:0;border:none;border-right:solid 1px #ddd;">
+				<option value="id">用户ID</option>
+				<option value="username">用户名</option>
+				<option value="nickname">用户昵称</option>
+				<option value="email">邮箱</option>
+				<option value="phone">手机号</option>
+				<option value="qq">QQ</option>
+				<option value="groupid">用户组ID</option>
+			</select>
+			<select class="pk-textbox" data-value="{$qjormh}" name="qjormh"
+				style="width:72px;position:absolute;left:90px;top:0;border:none;border-right:solid 1px #ddd">
+				<option value="=">精确</option>
+				<option value="like">模糊</option>
+			</select>
+			<input type="text" class="pk-textbox" name="value" value="{$value}" style="border:none;" />
+			<button type="submit" class="pk-btn pk-btn-primary" style="position:absolute;right:0;top:0;width:70px;">搜索</button>
+		</div>
+	</div>
+
+	<div class="pk-row">
+		<div class="pk-w-sm-12">
+			<table class="pk-table pk-table-bordered pk-width-all pk-text-sm">
+				<tr>
+					<th style="text-align:center;width:77px">ID</th>
+					<th style="text-align:center">用户组</th>
+					<th style="text-align:center">用户名</th>
+					<th class="pk-hide-sm" style="text-align:center">昵称</th>
+					<th class="pk-hide-sm" style="text-align:center;width:77px">{$_G['SET']['JIFENNAME']}</th>
+					<th class="pk-hide-sm" style="text-align:center;width:77px">{$_G['SET']['TIANDOUNAME']}</th>
+					<th class="pk-hide-sm" style="text-align:center;width:200px">注册日期</th>
+					<th style="width:150px;text-align:center">管理</th>
+				</tr>
+				{$userlist}
+				<tr>
+					<td colspan="99" style="text-align:center">
+						<a class="pk-btn pk-btn-sm pk-btn-secondary"
+							href="index.php?c=app&a=superadmin:index&s=user&t=search&page={Cnum({$page}-1,1,true,1)}">上一页</a>
+						<a class="pk-btn pk-btn-sm pk-btn-success" href="javascript:">{$page}</a>
+						<a class="pk-btn pk-btn-sm pk-btn-secondary"
+							href="index.php?c=app&a=superadmin:index&s=user&t=search&page={Cnum({$page}+1,2,true,2)}">下一页</a>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</form>
+<script>
+	function _superedituser(uid) {
+		openIframe('index.php?c=app&a=superadmin:index&s=user&t=seniormanagement&id=' + uid, "编辑用户[UID:" + uid + "]");
+	}
+
+	function _superbanuser(uid, This) {
+		ppp({
+			type: 1,
+			content: ["确认禁用该用户[UID:" + uid + "]？",
+				"<p class='pk-text-xs pk-text-danger pk-margin-bottom-5'>该功能需要<a target=_blank href=https://www.hadsky.com/appstore.html?id=33 style=text-decoration:underline>“杀死机器人”防灌水插件</a>支持，功能设置等同于“禁止用户及删除该用户的所有帖子”按钮</p>",
+				"<input type=number class=pk-textbox placeholder=移动该用户所至的用户组ID，默认0>",
+				"<input type=checkbox checked>帖子删至回收站（不勾选该项将直接删除相关帖子，不可恢复）",
+			].join(''),
+			icon: 3,
+			submit: function(_id) {
+				var o = $('#pkpopup_' + _id + ' .pk-popup-body');
+				if ("{$_G['SET']['APP_PUYUETIAN_KILLROBOT_LOAD']}" != "embed") {
+					ppp({
+						type: 0,
+						icon: 2,
+						content: "缺少<a target=_blank href=https://www.hadsky.com/appstore.html?id=33 style=text-decoration:underline>“杀死机器人”防灌水插件</a>支持，如果已经下载安装该插件请开启该插件"
+					});
+					return false;
+				}
+				$.post('index.php?c=app&a=puyuetian_killrobot:admin', {
+					uids: uid,
+					groupid: o.find('input[type=number]').val(),
+					recycle: o.find('input[type=checkbox]').prop('checked') ? 1 : 0
+				}, function(rd) {
+					if (rd['state'] != 'ok') {
+						ppp({
+							icon: 2,
+							content: rd['msg']
+						});
+						return false;
+					}
+					ppp({
+						type: 3,
+						icon: 1,
+						content: "禁用成功"
+					});
+					$(This).parents('tr:eq(0)').find('td._ugname').html('无').end().find('td._nickname')
+						.html('该账号已被禁用');
+				});
+			}
+		});
+	}
+
+	function _superdeluser(uid, This) {
+		ppp({
+			type: 1,
+			content: "确认删除该用户[UID:" + uid + "]？",
+			icon: 3,
+			submit: function() {
+				$.getJSON('index.php', {
+					c: 'app',
+					a: 'superadmin:index',
+					s: 'delete',
+					table: 'user',
+					id: uid,
+					json: 1,
+					chkcsrfval: $_USER['CHKCSRFVAL']
+				}, function(data) {
+					if (data['state'] == 'ok') {
+						ppp({
+							type: 3,
+							icon: 1,
+							content: "删除成功"
+						});
+						$(This).parents('tr:eq(0)').remove();
+					} else {
+						ppp({
+							type: 1,
+							icon: 2,
+							content: data['datas']['msg']
+						});
+					}
+				});
+			}
+		});
+	}
+</script>

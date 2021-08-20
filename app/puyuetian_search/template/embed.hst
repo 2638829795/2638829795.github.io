@@ -1,0 +1,21 @@
+<script>
+	function app_puyuetian_search(input, _blank = false) {
+		var w = input;
+		if (typeof(input) == "object") {
+			w = $(w).val();
+		}
+		w = trim(w);
+		w = w.replace(/['"\-]+/g, '');
+		var url = '';
+		if (parseInt($_SET['REWRITEURL'])) {
+			url = 'search-' + encodeURIComponent(w) + '-1.html';
+		} else {
+			url = 'index.php?c=app&a=puyuetian_search&w=' + encodeURIComponent(w);
+		}
+		if (_blank) {
+			window.open(url, '_blank');
+		} else {
+			location.href = url;
+		}
+	}
+</script>

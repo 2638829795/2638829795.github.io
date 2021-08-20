@@ -1,0 +1,80 @@
+<form name="form_save" method="post" action="index.php?c=app&a=superadmin:index&s=save&os={$_G['GET']['S']}&ot={$_G['GET']['T']}&table=set">
+	<div class="pk-row pk-padding-bottom-15 pk-margin-bottom-15" style="border-bottom:solid 1px #458fce">
+		<label class="pk-w-sm-3 _labeltext pk-text-primary">FlyTemplate 模板设置</label>
+		<div class="pk-w-sm-8"></div>
+	</div>
+
+	<div class="pk-row pk-padding-bottom-15">
+		<label class="pk-w-sm-3 _labeltext">右侧热帖调用版块ID</label>
+		<div class="pk-w-sm-8">
+			<input type="text" class="pk-textbox _labelsbox" name="template_puyuetian_fly_hotreadsortids" placeholder="留空或0为所有版块显示" value="{$_G['SET']['TEMPLATE_PUYUETIAN_FLY_HOTREADSORTIDS']}">
+		</div>
+	</div>
+
+	<div class="pk-row pk-padding-bottom-15">
+		<label class="pk-w-sm-3 _labeltext">右侧热帖调用数量</label>
+		<div class="pk-w-sm-8">
+			<input type="number" class="pk-textbox" name="template_puyuetian_fly_hotreadcount" placeholder="留空或0为不显示" value="{$_G['SET']['TEMPLATE_PUYUETIAN_FLY_HOTREADCOUNT']}">
+		</div>
+	</div>
+	
+	<div class="pk-row pk-padding-bottom-15">
+		<label class="pk-w-sm-3 _labeltext">右侧热帖调用范围（天）</label>
+		<div class="pk-w-sm-8">
+			<input type="number" class="pk-textbox" name="template_puyuetian_fly_hotreaddays" placeholder="留空或0为不限制" value="{$_G['SET']['TEMPLATE_PUYUETIAN_FLY_HOTREADDAYS']}">
+		</div>
+	</div>
+	
+	<div class="pk-row pk-padding-bottom-15">
+		<label class="pk-w-sm-3 _labeltext">文章列表是否显示视频</label>
+		<div class="pk-w-sm-8">
+			<select class="pk-textbox" name="template_puyuetian_fly_listshowvideo" data-value="{$_G['SET']['TEMPLATE_PUYUETIAN_FLY_LISTSHOWVIDEO']}">
+				<option value="0">关闭</option>
+				<option value="1">开启</option>
+			</select>
+		</div>
+	</div>
+	
+	<div class="pk-row pk-padding-bottom-15">
+		<label class="pk-w-sm-3 _labeltext">文章列表图片最多加载个数</label>
+		<div class="pk-w-sm-8">
+			<input type="number" class="pk-textbox" name="template_puyuetian_fly_readimgnum" placeholder="不填或0为不显示图片，正整数" value="{$_G['SET']['TEMPLATE_PUYUETIAN_FLY_READIMGNUM']}">
+		</div>
+	</div>
+	
+	<div class="pk-row pk-padding-bottom-15">
+		<label class="pk-w-sm-3 _labeltext">右侧广告位1</label>
+		<div class="pk-w-sm-8">
+			<textarea name="template_puyuetian_fly_ad_yc1" class="pk-textarea _codemirrorbox" rows="7">{htmlspecialchars($_G['SET']['TEMPLATE_PUYUETIAN_FLY_AD_YC1'],ENT_QUOTES)}</textarea>
+		</div>
+	</div>
+
+	<div class="pk-row pk-padding-bottom-15">
+		<label class="pk-w-sm-3 _labeltext">右侧广告位2</label>
+		<div class="pk-w-sm-8">
+			<textarea name="template_puyuetian_fly_ad_yc2" class="pk-textarea _codemirrorbox" rows="7">{htmlspecialchars($_G['SET']['TEMPLATE_PUYUETIAN_FLY_AD_YC2'],ENT_QUOTES)}</textarea>
+		</div>
+	</div>
+	
+	<div class="pk-row pk-padding-bottom-15">
+		<label class="pk-w-sm-3 _labeltext">右侧广告位3</label>
+		<div class="pk-w-sm-8">
+			<textarea name="template_puyuetian_fly_ad_yc3" class="pk-textarea _codemirrorbox" rows="7">{htmlspecialchars($_G['SET']['TEMPLATE_PUYUETIAN_FLY_AD_YC3'],ENT_QUOTES)}</textarea>
+		</div>
+	</div>
+	
+	<div class="pk-row pk-padding-bottom-15">
+		<label class="pk-w-sm-3 _labeltext">右侧广告位4</label>
+		<div class="pk-w-sm-8">
+			<textarea name="template_puyuetian_fly_ad_yc4" class="pk-textarea _codemirrorbox" rows="7">{htmlspecialchars($_G['SET']['TEMPLATE_PUYUETIAN_FLY_AD_YC4'],ENT_QUOTES)}</textarea>
+		</div>
+	</div>
+
+	<div class="pk-row pk-padding-bottom-15">
+		<label class="pk-w-sm-3 _labeltext"></label>
+		<div class="pk-w-sm-8">
+			<button id="SubmitBtn" type="button">保存</button>
+			<a class="pk-btn pk-btn-success" target="_blank" href="//www.hadsky.com/read-3314-1.html">设置教程及说明</a>
+		</div>
+	</div>
+</form>

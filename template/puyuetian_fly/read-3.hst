@@ -1,0 +1,102 @@
+</ul>
+<fieldset class="layui-elem-field layui-field-title pk-text-center">
+	<legend></legend>
+</fieldset>
+<div id="saveloadhtml" class="pk-hide"></div>
+<div class="pk-text-center">
+	<div class="laypage-main">
+		<a id="loadmorereadlistbtn" href="javascript:" class="laypage-next">更多回复</a>
+	</div>
+</div>
+</div>
+<script>
+	$(function() {
+		var $loadpage = parseInt("{$page}");
+		$('#loadmorereadlistbtn').click(function() {
+			var This = this;
+			if ($(This).hasClass('disabled')) {
+				return false;
+			}
+			$(This).addClass('disabled').html('正在加载...');
+			$loadpage++;
+			$('#saveloadhtml').load("index.php?c=read&id={$id}&page=" + $loadpage + " #read-list", function(r, s, x) {
+				if (s == "error") {
+					layer.msg('加载出错！', {
+						icon: 2
+					});
+					$(This).removeClass('disabled').html('更多回复');
+				} else {
+					var $html = $('#saveloadhtml #read-list').html();
+					//console.log($html);
+					if (trim($html)) {
+						$('#read-list').append($html);
+						$('.replycontent img').attr({
+							"onclick": "LookImage(this)",
+							"onerror": "this.src='template/default/img/imageloaderror.png';this.title='此图已被狗给吃了~汪呜~';this.onclick=''"
+						});
+						$(This).removeClass('disabled').html('更多回复');
+					} else {
+						$('#loadmorereadlistbtn').addClass('disabled').html('已无更多回复');
+					}
+				}
+				$('#saveloadhtml').html('');
+			});
+		});
+
+		$('.readcontent img,.replycontent img').attr({
+			"onclick": "LookImage(this)",
+			"onerror": "this.src='template/default/img/imageloaderror.png';this.title='此图已被狗给吃了~汪呜~';this.onclick=''"
+		});
+	});
+
+	function ReplyNF($uid, $f, $nickname) {
+		if ($uid) {
+			PytCmd('inserthtml', false, '@' + $uid + ':(在' + $f + 'F的' + $nickname + ')&nbsp;');
+		} else {
+			PytCmd('inserthtml', false, '回复' + $f + '楼:');
+		}
+	}
+
+	$(function() {
+		$('#postreplysubmitbtn').click(function() {
+			form_post.content.value = trim(form_post.content.value);
+			if (!form_post.content.value) {
+				if (PytEditor && PytEditor.body) {
+					PytEditor.body.focus();
+				} else if ($('#PytEasyTextarea').length) {
+					$('#PytEasyTextarea textarea').focus();
+				} else {
+					form_post.content.focus();
+				}
+				return false;
+			}
+			form_post.content.value = form_post.content.value.replace(/\<div/g, '<p');
+			form_post.content.value = form_post.content
+				.value.replace(/\<\/div\>/g, '</p>');
+			$(this).prop('disabled', true).html('提交中...');
+			var formstring = FormDataPackaging('form[name="form_post"]:eq(0)');
+			$.post($('form[name="form_post"]:eq(0)').attr(
+				'action'), formstring, function(data) {
+				if (data['state'] == 'ok') {
+					location.href = "index.php?c=read&id=" + data['rid'] + "&cache=refresh&rnd=" + parseInt(Math.random() *
+						10000) + "#replylist";
+					layer.msg(data['msg'], {
+						icon: 1
+					});
+				} else {
+					$('form[name="form_post"] input[name="verifycode"]').val('');
+					$('#verifycodeimageobject').click();
+					layer.alert(data['msg'] || '未知错误', {
+						icon: 2
+					});
+				}
+				$('#postreplysubmitbtn').prop('disabled', false).html('提交回复');
+			}, 'json').error(function() {
+				$('#postreplysubmitbtn').prop('disabled', false).html('提交回复');
+				$('form[name="form_post"]:eq(0)').attr('action', $('form[name="form_post"]:eq(0)').attr('action').replace(
+					'&return=json', ''));
+				form_post.submit();
+			});
+		});
+	});
+</script>

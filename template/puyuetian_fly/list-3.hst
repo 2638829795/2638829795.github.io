@@ -1,0 +1,37 @@
+</ul>
+
+<!-- <div class="fly-none">没有相关数据</div> -->
+
+<div class="pk-text-center">
+	<div class="laypage-main">{$_G['TEMP']['HTML']}</div>
+</div>
+
+</div>
+<script>
+	$(function() {
+		// 小屏适应
+		if ($(window).width() > 1000) {
+			return false;
+		}
+		var imgoh = 188,
+			videooh = 386;
+		$('ul.fly-list').find('._imgs img').each(function() {
+			$(this).parent().css({
+				height: $(this).width(),
+				maxHeight: $(window).width() / 3
+			});
+		}).end().find('._video video').each(function() {
+			$(this).css({
+				height: $(this).width()
+			});
+		});
+		$('ul.fly-list').find('._imgs').each(function() {
+			var a = $(this).parents('li').outerHeight();
+			$(this).parents('li').outerHeight(a - (imgoh - $(this).outerHeight()));
+		});
+		$('ul.fly-list').find('._video').each(function() {
+			var a = $(this).parents('li').outerHeight();
+			$(this).parents('li').outerHeight(a - (videooh - $(this).outerHeight()));
+		});
+	});
+</script>

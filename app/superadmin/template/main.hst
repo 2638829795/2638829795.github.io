@@ -1,0 +1,216 @@
+<link rel="stylesheet" href="app/superadmin/template/css/main.css" />
+<!--启动界面-->
+<div class="start-div"></div>
+<!--大屏端-->
+<div id="app-superadmin-main" class="pk-row pk-hide pk-admin"
+	data-data="{htmlspecialchars($_G['TEMP']['NAV_DATA'],ENT_QUOTES)}">
+	<div class="left">
+		<div class="pk-row adminbox">
+			<div class="pk-w-md-4 pk-padding-0">
+				<img src="userhead/{$_G['TEMP']['UID']}.png" onerror="this.src='userhead/0.png'" />
+			</div>
+			<div class="pk-w-md-8 pk-padding-0">
+				<p class="pk-text-truncate">{$_G['USER']['NICKNAME']}</p>
+				<p class="pk-text-truncate">欢迎您，超级管理员</p>
+			</div>
+		</div>
+		<div class="nav">
+			<ul></ul>
+		</div>
+		<div class="powered">
+			<a class="pk-hover-underline" target="_blank" href="http://www.hadsky.com">Powered by HadSky</a>
+		</div>
+	</div>
+	<div class="right">
+		<div class="pk-row" style="background-color:#EEEEEE">
+			<div class="pk-w-md-9 pk-padding-0">
+				<div class="nav">
+					<ul>
+						<li id="left-nav-sh" style="background-color:#009e73">
+							<span class="fa fa-fw fa-chevron-left"></span>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="pk-w-md-3 pk-padding-0">
+				<div class="nav2">
+					<a target="_blank" href="index.php">站点首页<span class="fa fa-fw fa-angle-double-right"></span></a>
+				</div>
+			</div>
+		</div>
+		<div class="pk-row" style="height:100%">
+			<div class="inav">
+				<ul>
+					<li onclick="Close_Nav_All()" style="padding:0 .5rem">
+						<i class="fa fa-fw fa-times"></i>
+					</li>
+				</ul>
+			</div>
+			<div id="app-superadmin-mainshow" class="pk-w-md-12"></div>
+		</div>
+	</div>
+</div>
+<!--小屏端-->
+<div id="app-superadmin-main-sm" class="pk-row pk-hide pk-admin-sm">
+	<div class="pk-row _header">
+		<div class="pk-w-sm-4">
+			<select></select>
+		</div>
+		<div class="pk-w-sm-8">
+			<select></select>
+		</div>
+	</div>
+	<div class="pk-row _bodyer">
+		<div id="app-superadmin-mainshow-sm">
+			<iframe src=""></iframe>
+		</div>
+	</div>
+</div>
+<template id="mustbindtemplate">
+	<div class="pk-row">
+		<div class="pk-w-w-12 pk-text-sm pk-margin-bottom-5">
+			<span>用户名</span>
+			<a target="_blank" class="pk-float-right pk-text-primary pk-hover-underline"
+				href="https://www.hadsky.com/reg.html">没有账号？注册 &raquo;</a>
+		</div>
+		<div class="pk-w-w-12 pk-margin-bottom-10">
+			<input type="text" name="un" class="pk-textbox" placeholder="请输入用户名" />
+		</div>
+		<div class="pk-w-w-12 pk-text-sm pk-margin-bottom-5">
+			<span>登录密码</span>
+		</div>
+		<div class="pk-w-w-12 pk-margin-bottom-15">
+			<input type="password" name="pw" class="pk-textbox" placeholder="请输入登录密码" />
+		</div>
+	</div>
+</template>
+<script src="template/puyuetianUI/js/md5.min.js"></script>
+<script>
+	// 初始化数据
+	var Code_Powered = 'Powered by HadSky';
+	var FontSwitch = parseInt("{$_G['SET']['APP_SUPERADMIN_FONTSWITCH']}") || 0;
+	// 检测是否绑定了云服务
+	$(function() {
+		var apiUrl = function(url) {
+			return 'index.php?c=app&a=superadmin:index&s=api&url=' + encodeURIComponent(url) + '&nocache=1';
+		}
+		$.getJSON(apiUrl('mustbind'), function(rd) {
+			if (rd['state'] != 'no') {
+				return false;
+			}
+			if (rd['msg'] != 'notmust' && rd['msg'] != 'must') {
+				return false;
+			}
+			ppp({
+				type: rd['msg'] == 'notmust' ? 1 : 0,
+				title: '登录HadSky官方账号',
+				content: $('#mustbindtemplate').html(),
+				area: $(window).width() < 1000 ? ['100%', '100%'] : ['360px', 'auto'],
+				shade: 1,
+				hideclose: 1,
+				nomove: 1,
+				noclose: 1,
+				complete: function(id) {
+					$('#pkpopup_' + id).find('.pk-popup-submit').html('登录并绑定');
+					$('#pkpopup_' + id).find('.pk-popup-cancel').html('暂时不了');
+				},
+				submit: function(id) {
+					var o = $('#pkpopup_' + id);
+					var username = o.find('input[name="un"]').val();
+					var password = (o.find('input[name="pw"]').val()) + '';
+					var domain = location.hostname;
+					var time = parseInt((new Date()).getTime() / 1000);
+					var rnd = md5(Math.random());
+					if (!username || !password) {
+						ppp({
+							type: 3,
+							content: "请输入完整信息",
+							icon: 0
+						});
+						return false;
+					}
+					var a = location.pathname.split('/'),
+						childdir = '';
+					for (var i = 0; i < a.length; i++) {
+						if (i == 0 || i == a.length - 1) {
+							continue;
+						}
+						childdir += '/' + a[i];
+					}
+					if (childdir) {
+						childdir = childdir.substr(1);
+					}
+					var url = 'mustbind&bind=1';
+					var rds = {
+						username,
+						password: md5(md5(password) + rnd + time),
+						domain,
+						time,
+						rnd,
+						childdir
+					};
+					for (var k in rds) {
+						url += '&' + k + '=' + rds[k]
+					}
+					o.find('.pk-popup-submit').prop('disabled', true);
+					$.getJSON(apiUrl(url), function(rd) {
+						o.find('.pk-popup-submit').prop('disabled', false);
+						if (rd['state'] != 'ok') {
+							ppp({
+								type: 0,
+								content: rd['msg'],
+								icon: 2
+							});
+							return false;
+						}
+						pkpopup.close(id);
+						var sk = rd['msg'];
+						$.post('index.php?c=app&a=superadmin:index&s=save&os=app&ot=hadskycloudserver&table=set&json=yes', {
+							app_hadskycloudserver_sitekey: sk
+						}, function(rd) {
+							if (rd['state'] != 'ok') {
+								ppp({
+									type: 0,
+									content: rd['msg'],
+									icon: 2
+								});
+								return false;
+							}
+							ppp({
+								content: "账号绑定成功，页面将会被重新加载",
+								icon: 1,
+								hideclose: 1,
+								nomove: 1,
+								shade: 1,
+								submit: function() {
+									var _pid = ppp({
+										type: 4,
+										shade: 1,
+										content: "重载中..."
+									});
+									$.getJSON(
+										'index.php?c=app&a=superadmin:index&s=api&clearcache=1',
+										function() {
+											pkpopup.close(
+												_pid);
+											ppp({
+												type: 3,
+												icon: 1,
+												content: "重载完成",
+												close: function() {
+													location
+														.reload();
+												}
+											});
+										}
+									);
+								}
+							});
+						});
+					});
+				}
+			});
+		});
+	});
+</script>
+<script src="app/superadmin/template/js/main.js"></script>

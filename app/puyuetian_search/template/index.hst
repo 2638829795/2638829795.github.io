@@ -1,0 +1,87 @@
+<style>
+	.searchbox_index {
+		width: 100%;
+		height: 44px;
+		border-radius: 7px;
+		border: solid 2px #4e6ef2;
+		position: relative;
+	}
+
+	.searchbox_index input[name="w"] {
+		border: none;
+		height: 100%;
+		outline: none;
+	}
+
+	.searchbox_index button {
+		position: absolute;
+		top: 0;
+		right: 0;
+		height: 100%;
+		width: 80px;
+		background-color: #4e6ef2;
+		color: #fff;
+		border-radius: 0;
+		letter-spacing: 2px;
+	}
+
+	.searchbox_index button:hover {
+		background-color: #4e6ef2;
+		opacity: 1;
+	}
+
+	.searchbox_logo {
+		display: block;
+		margin: 0 auto;
+		max-width: 100%;
+	}
+</style>
+<div class="pk-container">
+	<div class="pk-background-color-white" style="padding:70px 0 200px 0;">
+		<img class="searchbox_logo" src="{$_G['SET']['APP_PUYUETIAN_SEARCH_LOGOURL']}" alt="" />
+		<div class="pk-row" style="max-width:600px;">
+			<div class="pk-w-sm-12 pk-padding-0">
+				<div class="searchbox_index">
+					<input id="searchTxt" type="text" class="pk-textbox" name="w" placeholder="请输入关键词" />
+					<button id="searchBtn" type="button" class="pk-btn">搜索</button>
+				</div>
+				<div id="searchHotWords" class="searchbox_hotwords pk-padding-top-10 pk-text-xs pk-hide"
+					data-hotwords="{htmlspecialchars($_G['SET']['APP_PUYUETIAN_SEARCH_HOTWORDS'],ENT_QUOTES)}">
+					<span>搜索热词：</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	$(function() {
+		// 搜索热词
+		var hotwords = $('#searchHotWords').data('hotwords') || '';
+		if (hotwords) {
+			hotwords = hotwords.split(',');
+			var o = $('#searchHotWords'),
+				url = '',
+				w = '';
+			for (var i = 0; i < hotwords.length; i++) {
+				w = hotwords[i];
+				if (parseInt($_SET['REWRITEURL'])) {
+					url = 'search-' + encodeURIComponent(w) + '-1.html';
+				} else {
+					url = 'index.php?c=app&a=puyuetian_search&w=' + encodeURIComponent(w);
+				}
+				o.append([
+					'<a class="pk-text-primary pk-hover-underline" href="' + url + '">' + w + '</a>',
+					'&nbsp;&nbsp;'
+				].join(''));
+			}
+			o.removeClass('pk-hide');
+		}
+		$('#searchBtn').on('click', function() {
+			if (!$('#searchTxt').val()) {
+				$('#searchTxt').focus();
+				return false;
+			}
+			app_puyuetian_search($('#searchTxt'));
+		});
+	});
+</script>
